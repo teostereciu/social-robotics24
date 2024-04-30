@@ -51,9 +51,29 @@ def main(session, details):
     
     
 
-    session.leave() 
 
-# Create wamp connection
+
+    def on_keyword(frame):
+        print(frame)
+        if ("certainty" in frame["data"]["body"] and
+                frame["data"]["body"]["certainty"] > 0.45):
+
+            session.call("rie.dialogue.say", text="")
+
+    yield session.call("rie.dialogue.say",
+                       text="Time for a break, you can ask me for a dance or a fun fact. ")
+    yield session.call("rie.dialogue.keyword.add",
+                       keywords=["fun fact", "random fact", "fact", "facts", "some fact"])
+    yield session.subscribe(on_keyword,
+                            "rie.dialogue.keyword.stream")
+    yield session.call("rie.dialogue.keyword.stream")
+    # Please wait 20 seconds before we close the keyword stream
+    yield sleep(10)
+    yield session.call("rie.dialogue.keyword.close")
+    yield session.call("rie.dialogue.keyword.clear")
+    session.leave()  # Close the connection with the robot
+
+    # Create wamp connection
 wamp = Component(
     transports=[{
         "url": "ws://wamp.robotsindeklas.nl",
