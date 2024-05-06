@@ -3,13 +3,16 @@ from twisted.internet.defer import inlineCallbacks
 from autobahn.twisted.util import sleep
 
 #define keywords
+#these keywords are for the break
 fun_keywords = ["tell me", "fact", "tell", "fun"]
 dance_keywords = ["dance", "moves", "show me", "groove", "dense", "show"]
 
+#these keywords are for whether to continue
 positive_keywords = ["yes", "ja", "yea", "sure", "of course"]
 negative_keywords = ["no", "nope", "nah"]
 
 #define on keyword function
+#this function indicates the response for each keyword question
 @inlineCallbacks
 def on_keyword(frame):
     c = frame["data"]["body"]["certainty"]
@@ -34,7 +37,7 @@ def on_keyword(frame):
 def main(session, details):
     global sess
     sess = session
-    #first question
+    #first question to start the lesson
     question1 = "Do you want to test your Geography knowledge with a quiz?"
     answers1 = {"yes": ["yes", "yeah", "sure", "yup", "yay"], "no": ["no", "nah", "nope", "nay"]}
 
@@ -56,6 +59,7 @@ def main(session, details):
     yield session.call("rie.dialogue.stop")
 
     #second question
+    #geography question
     question2 = "What's the capital city of the UK?"
     answers2 = {"london": ["London", "london", "lon", "don", "lomdom", 'lomndomn', 'London?', 'London!'], "no": ["I don't know.", "no idea", "no"]}
 
@@ -68,6 +72,7 @@ def main(session, details):
         yield session.call("rie.dialogue.say",
         text="Good job!")
 
+        #the kid get the basic question right
         #ask a harder question
         question3 = "Next question. What's the capital city of Nigeria?"
         answers3 = {"abuja": ["abuja", "Abuja"], "no": ["I don't know.", "no idea", "no"]}
@@ -88,6 +93,8 @@ def main(session, details):
         yield session.call("rie.dialogue.say",
                            text="The capital city of the UK is London. ")
 
+        #when the basic question is answered wrong
+        #the kid may choose to try another question or stop
         yield session.call("rie.dialogue.config.language", lang="en")
         yield session.call("rie.dialogue.keyword.language", lang="en")
         yield session.call("rie.dialogue.say",
@@ -110,7 +117,8 @@ def main(session, details):
         yield session.call("rie.dialogue.say",
                            text="I'll ask an easier question. ")
 
-    #easy question
+    #to restore the kid's confidence
+    #easy question follows
     question4 = "Which country has the capital city Paris? "
     answers4 = {"france": ["France", "france", "french"]}
     answer = yield session.call("rie.dialogue.ask",
@@ -125,6 +133,8 @@ def main(session, details):
                            text="Paris is in France. ")
 
 
+    #it has been a while
+    #a break implemented
     yield session.call("rie.dialogue.config.language", lang="en")
     yield session.call("rie.dialogue.keyword.language", lang="en")
     yield session.call("rie.dialogue.say",
@@ -135,8 +145,8 @@ def main(session, details):
     yield session.subscribe(on_keyword,
                             "rie.dialogue.keyword.stream")
     yield session.call("rie.dialogue.keyword.stream")
-    # Please wait 15 seconds before we close the keyword stream
-    yield sleep(15)
+    # Please wait 7 seconds before we close the keyword stream
+    yield sleep(7)
     yield session.call("rie.dialogue.say", text="Okay.")
     yield session.call("rie.dialogue.keyword.clear")
     yield session.call("rie.dialogue.keyword.close")
@@ -157,6 +167,7 @@ def main(session, details):
     else:
         yield session.call("rie.dialogue.say", text="Sorry, incorrect answer.London is the capital city of the United Kingdom.")
 
+    #the end of the lesson
     yield session.call("rie.dialogue.say",
                        text="That was the last question of the day. Bye for now! ")
 
