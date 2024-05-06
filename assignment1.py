@@ -1,3 +1,10 @@
+'''
+Assignment 1 script
+Topic: teaching geography to elementary school kids with quizzes
+Group6: Teodora Stereciu (s4678826) Yingsi Gao (s4706501)
+Code reference: https://srl-rug.github.io/SRL_Website/examples
+'''
+
 from autobahn.twisted.component import Component, run
 from twisted.internet.defer import inlineCallbacks
 from autobahn.twisted.util import sleep
