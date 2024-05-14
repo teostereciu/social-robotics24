@@ -42,6 +42,8 @@ def main(session, details):
     global sess
     sess = session
 
+    yield sess.call("rom.optional.behavior.play", name="BocklyStand")
+
     line = lines[0]
     yield session.call("rie.dialogue.say", text=line) # introduce myself
 
@@ -49,7 +51,7 @@ def main(session, details):
     #question = lines[1]
     #answers = {"yes": ["yes", "yeah", "sure", "yup", "yay"], "no": ["no", "nah", "nope", "nay"]}
 
-    line = "Today we will dive into the fiery world of volcanoes. " + lines[4]
+    '''line = "Today we will dive into the fiery world of volcanoes. " + lines[4]
     yield session.call("rie.dialogue.say", text=line)
 
     # parts of a volcano
@@ -67,26 +69,33 @@ def main(session, details):
     # crater
     line = lines[8]
     yield session.call("rie.dialogue.say", text=line)
-
+    '''
     # erruption
     line = lines[9]
     yield session.call("rie.dialogue.say", text=line)
     line = lines[10]
-    yield session.call("rie.dialogue.say", text=line)
-
+    #yield session.call("rie.dialogue.say", text=line)
+    
     # custom gesture
+    yield sess.call("rom.actuator.motor.write", frames=[{"time": 200, "data":{"body.arms.right.lower.roll":-1.5,
+                                                                            "body.arms.left.lower.roll":-1.5}}
+                                                        
+                                                        ])
+    yield session.call("arms.right.lower.roll")
+    
 
+    '''
     # lava
     line = lines[11]
     yield session.call("rie.dialogue.say", text=line)
 
     # ashes
     line = lines[12]
-    yield session.call("rie.dialogue.say", text=line)
+    yield session.call("rie.dialogue.say", text=line)'''
 
     # start quiz with aruco cards
     # ash question
-    line = lines[13]
+    '''line = lines[13]
     yield session.call("rie.dialogue.say", text=line)
     # wait until we see a card
     correct = False
@@ -94,7 +103,8 @@ def main(session, details):
     while not correct:
         frames = yield session.call("rie.vision.card.read")
         print(frames[0])
-        card_id = frames[0]
+        card_id = frames[0]['data']['body'][0][-1]
+        print(frames[0]['data']['body'])
         if cards[card_id] == 'ash':
             correct = True
         else:
@@ -109,7 +119,8 @@ def main(session, details):
     while not correct:
         frames = yield session.call("rie.vision.card.read")
         print(frames[0])
-        card_id = frames[0]
+        card_id = frames[0]['data']['body'][0][-1]
+        print(frames[0]['data']['body'])
         if cards[card_id] == 'vent':
             correct = True
         else:
@@ -124,7 +135,7 @@ def main(session, details):
     while not correct:
         frames = yield session.call("rie.vision.card.read")
         print(frames[0])
-        card_id = frames[0]
+        card_id = frames[0]['data']['body'][0][-1]
         if cards[card_id] == 'vent':
             correct = True
         else:
@@ -151,7 +162,7 @@ def main(session, details):
     yield session.call("rie.dialogue.say",
                        text="That was it for today. Bye for now! ")
     
-    sess.call("rom.optional.behavior.play", name="BlocklyWaveRightArm")
+    sess.call("rom.optional.behavior.play", name="BlocklyWaveRightArm")'''
     session.leave()  #close the connection with the robot
 
 
@@ -161,7 +172,7 @@ wamp = Component(
         "url": "ws://wamp.robotsindeklas.nl",
         "serializers": ["msgpack"]
     }],
-    realm="rie.66334b92c887f6d074f02f01",
+    realm="rie.66436196c887f6d074f07f47",
 )
 
 
