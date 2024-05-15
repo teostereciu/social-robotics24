@@ -1,5 +1,5 @@
-lines = ["Hello, my name is Chani! Today, I'll teach you about volcanoes.",
-         "Do you know what a volcano is?",
+lines = ["Hello!",
+         "My name is Chani! Today, I'll teach you about volcanoes.",
          "No worries! Let me show you a volcano. I'll tell you more about the fiery world of volcanoes.",
          "Awesome! Today we will dive into the fiery world of volcanoes.",
          "They might look scary, but they are actually pretty fascinating.",
@@ -8,7 +8,8 @@ lines = ["Hello, my name is Chani! Today, I'll teach you about volcanoes.",
          "Think of the volcano as a big mountain. Underground, there is magma. Magma is hot molten rock.",
          "In the middle of the mountain, there is a main vent. The magma flows through the vent.",
          "On top of the mountain, there is a crater. The vent connects to the crater.",
-         "But, a volcano is not your average mountain. It will erupt sometimes.",
+         "But, a volcano is not your average mountain. It will sometimes. ",
+         "Erupt! ",
 
          """Underground, magma slowly accumulate. When the pressure builds up, it has nowhere to go but up the main vent. 
          When the magma reaches the crater... Poof!""",

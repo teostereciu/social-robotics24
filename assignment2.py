@@ -36,16 +36,31 @@ def on_keyword(frame):
             sess.call("rom.optional.behavior.play", name="BlocklyWaveRightArm")
             sess.leave()
 
+@inlineCallbacks
+def touched(frame):
+    if ("body.head.front" in frame["data"] or
+        "body.head.middle" in frame["data"] or
+            "body.head.rear" in frame["data"]):
+        print("Why touching my head?")
+        yield sess.call("rie.dialogue.say",
+                        text="That was it for today. Bye for now! ")
+
+
 
 @inlineCallbacks
 def main(session, details):
     global sess
     sess = session
 
-    yield sess.call("rom.optional.behavior.play", name="BocklyStand")
+    yield sess.call("rom.optional.behavior.play", name="BlocklyStand")
 
+    yield sess.call("rie.vision.face.find")
     line = lines[0]
+    yield session.call("rie.dialogue.say", text=line)  # say hello
+    yield sess.call("rom.optional.behavior.play", name="BlocklyWaveRightArm")
+    line = lines[1]
     yield session.call("rie.dialogue.say", text=line) # introduce myself
+
 
     # introduce volcanoes
     #question = lines[1]
@@ -77,12 +92,24 @@ def main(session, details):
     #yield session.call("rie.dialogue.say", text=line)
     
     # custom gesture
-    yield sess.call("rom.actuator.motor.write", frames=[{"time": 200, "data":{"body.arms.right.lower.roll":-1.5,
-                                                                            "body.arms.left.lower.roll":-1.5}}
-                                                        
+    yield sess.call("rom.actuator.motor.write", frames=[{"time": 200, "data": {"body.arms.right.lower.roll": -1.5,
+                                                                               "body.arms.left.lower.roll": -1.5,
+                                                                               "body.head.pitch": 0.15}}
+
                                                         ])
-    yield session.call("arms.right.lower.roll")
-    
+    yield sess.call("rom.actuator.motor.write", frames=[{"time": 400, "data": {"body.head.pitch": -0.15,
+                                                                               "body.arms.right.lower.roll": -1.5,
+                                                                               "body.arms.left.lower.roll": -1.5
+                                                                                }
+                                                        }])
+    yield sess.call("rom.actuator.motor.write", frames=[{"time": 400, "data": {"body.arms.right.lower.roll": 6e-5,
+                                                                               "body.arms.left.lower.roll": 6e-5,
+                                                                               "body.arms.right.upper.pitch": -2.5,
+                                                                               "body.arms.left.upper.pitch": -2.5}
+                                                         }], force=True)
+    line = lines[10]
+    yield session.call("rie.dialogue.say", text=line) #eruption
+    yield sess.call("rom.optional.behavior.play", name="BlocklyStand")
 
     '''
     # lava
@@ -159,10 +186,12 @@ def main(session, details):
     yield session.call("rie.dialogue.keyword.close")
 
     # end of the lesson
-    yield session.call("rie.dialogue.say",
-                       text="That was it for today. Bye for now! ")
-    
+    yield sess.subscribe(touched, "rom.sensor.touch.stream")
+    yield sess.call("rom.sensor.touch.stream")
     sess.call("rom.optional.behavior.play", name="BlocklyWaveRightArm")'''
+
+
+
     session.leave()  #close the connection with the robot
 
 
@@ -172,7 +201,7 @@ wamp = Component(
         "url": "ws://wamp.robotsindeklas.nl",
         "serializers": ["msgpack"]
     }],
-    realm="rie.66436196c887f6d074f07f47",
+    realm="rie.66432728c887f6d074f07d08",
 )
 
 
