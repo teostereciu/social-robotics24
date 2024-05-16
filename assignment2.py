@@ -58,6 +58,7 @@ def main(session, details):
     # parts of a volcano
     line = lines[3]
     yield session.call("rie.dialogue.say", text=line)
+    yield sess.call("rom.optional.behavior.play", name="BlocklyInviteRight") # built-in gesture
 
     # magma
     line = lines[4]
@@ -77,20 +78,34 @@ def main(session, details):
     
     # custom gesture
     yield sess.call("rom.actuator.motor.write", frames=[{"time": 200, "data": {"body.arms.right.lower.roll": -1.5,
+                                                                               "body.arms.right.upper.pitch": 0.2,
                                                                                "body.arms.left.lower.roll": -1.5,
-                                                                               "body.head.pitch": 0.15}}
-
-                                                        ])
-    yield sess.call("rom.actuator.motor.write", frames=[{"time": 400, "data": {"body.head.pitch": -0.15,
-                                                                               "body.arms.right.lower.roll": -1.5,
-                                                                               "body.arms.left.lower.roll": -1.5
-                                                                                }
-                                                        }])
-    yield sess.call("rom.actuator.motor.write", frames=[{"time": 400, "data": {"body.arms.right.lower.roll": 6e-5,
-                                                                               "body.arms.left.lower.roll": 6e-5,
+                                                                               "body.arms.left.upper.pitch": 0.2,
+                                                                               "body.head.pitch": 0.15}},
+                                                        {"time": 200, "data": {"body.arms.right.lower.roll": -1.5,
+                                                                               "body.arms.right.upper.pitch": 0.2,
+                                                                               "body.arms.left.lower.roll": -1.5,
+                                                                               "body.arms.left.upper.pitch": 0.2,
+                                                                               "body.head.pitch": -0.15}},
+                                                        {"time": 400, "data": {"body.arms.right.lower.roll": 6e-5,
                                                                                "body.arms.right.upper.pitch": -2.5,
-                                                                               "body.arms.left.upper.pitch": -2.5}
-                                                         }], force=True)
+                                                                               "body.arms.left.lower.roll": 6e-5,
+                                                                               "body.arms.left.upper.pitch": -2.5,
+                                                                               "body.head.pitch": 0.1}}
+
+                                                        ],
+                    force=True, sync=True
+                    )
+    # yield sess.call("rom.actuator.motor.write", frames=[{"time": 400, "data": {"body.head.pitch": -0.15,
+    #                                                                            "body.arms.right.lower.roll": -1.5,
+    #                                                                            "body.arms.left.lower.roll": -1.5
+    #                                                                             }
+    #                                                     }])
+    # yield sess.call("rom.actuator.motor.write", frames=[{"time": 400, "data": {"body.arms.right.lower.roll": 6e-5,
+    #                                                                            "body.arms.left.lower.roll": 6e-5,
+    #                                                                            "body.arms.right.upper.pitch": -2.5,
+    #                                                                            "body.arms.left.upper.pitch": -2.5}
+    #                                                      }], force=True)
     line = lines[8]
     yield session.call("rie.dialogue.say", text=line) 
     yield sess.call("rom.optional.behavior.play", name="BlocklyStand")

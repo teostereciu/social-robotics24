@@ -14,10 +14,10 @@ lines = ["Hello!",
          "Lava runs out...",
          "and ashes rise up into the sky.",
          "Do you remember which one is the ash?",
-         "No. That's the <>. The ash is a gray cloud above the volcano!",
+         "No. That's the ash. The ash is a gray cloud above the volcano!",
          "Yes! That's correct. Can you now show me the vent of a volcano?",
          
-         "No. This is the <>. The vent in in the middle of the volcano.",
+         "No. This is the vent. The vent in in the middle of the volcano.",
          "That's right! What runs through the vent? Can you show me?",
          "No. Remember that lava is molten rock that reached the surface. Underground molten rock is called magma!",
          "Good job! That was a tricky one. Let's clap together for you! Say clap Chani!"
