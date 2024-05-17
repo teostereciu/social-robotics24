@@ -8,7 +8,7 @@ Code reference: https://srl-rug.github.io/SRL_Website/examples
 from autobahn.twisted.component import Component, run
 from twisted.internet.defer import inlineCallbacks
 from autobahn.twisted.util import sleep
-from dialogue import lines, applause_on_keyword, is_smart_question, possible_answers
+from dialogue import lines #, applause_on_keyword, is_smart_question, possible_answers
 
 # indicates the response to keywords
 @inlineCallbacks
@@ -31,7 +31,7 @@ def touched(frame):
             "body.head.rear" in frame["data"]):
         print("Why touching my head?")
         yield sess.call("rie.dialogue.say",
-                        text="That was it for today. Bye for now! ")
+                        text="That was it for today. You did a great job! Bye for now! ")
         sess.leave()
 
 
@@ -71,6 +71,7 @@ def main(session, details):
     # crater
     line = lines[6]
     yield session.call("rie.dialogue.say", text=line)
+    yield sess.call("rom.optional.behavior.play", name="BlocklyStand")
     
     # erruption
     line = lines[7]
@@ -96,16 +97,7 @@ def main(session, details):
                                                         ],
                     force=True, sync=True
                     )
-    # yield sess.call("rom.actuator.motor.write", frames=[{"time": 400, "data": {"body.head.pitch": -0.15,
-    #                                                                            "body.arms.right.lower.roll": -1.5,
-    #                                                                            "body.arms.left.lower.roll": -1.5
-    #                                                                             }
-    #                                                     }])
-    # yield sess.call("rom.actuator.motor.write", frames=[{"time": 400, "data": {"body.arms.right.lower.roll": 6e-5,
-    #                                                                            "body.arms.left.lower.roll": 6e-5,
-    #                                                                            "body.arms.right.upper.pitch": -2.5,
-    #                                                                            "body.arms.left.upper.pitch": -2.5}
-    #                                                      }], force=True)
+
     line = lines[8]
     yield session.call("rie.dialogue.say", text=line) 
     yield sess.call("rom.optional.behavior.play", name="BlocklyStand")
@@ -182,11 +174,12 @@ def main(session, details):
     yield session.call("rie.dialogue.keyword.close")
 
     # end of the lesson
+    yield session.call("rie.dialogue.say", text="Touch my head to say good bye!")
     yield sess.subscribe(touched, "rom.sensor.touch.stream")
     yield sess.call("rom.sensor.touch.stream")
-    # maybe metion that the student can end the lesson at any time and add this somewhere at the beginning? or make the bot sing at the end of the lesson until it's stopped or sth lol
 
-    sess.leave()  # close the connection with the robot
+
+    # sess.leave()  # close the connection with the robot
 
 
 # create wamp connection
@@ -195,7 +188,7 @@ wamp = Component(
         "url": "ws://wamp.robotsindeklas.nl",
         "serializers": ["msgpack"]
     }],
-    realm="rie.66432728c887f6d074f07d08",
+    realm="rie.6645bd69f26645d6dd2bc91c",
 )
 
 
