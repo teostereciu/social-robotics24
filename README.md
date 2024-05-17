@@ -12,4 +12,4 @@ This is a geography lesson about volcanoes.
 As the robot is introducing different parts of a volcano, 
 specially made cards are to be displayed by human assistant to the person taking the lesson. 
 The cards may be printed out or shown from a mobil device. 
-The cards can be found in: a canva link
+The cards can be found in: https://www.canva.com/design/DAGFMyVL_DU/VR5mD6-1kCYkModnmo3DXg/edit?utm_content=DAGFMyVL_DU&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
