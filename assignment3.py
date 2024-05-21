@@ -8,15 +8,8 @@ Code reference: https://srl-rug.github.io/SRL_Website/examples
 from autobahn.twisted.component import Component, run
 from twisted.internet.defer import inlineCallbacks
 from autobahn.twisted.util import sleep
-import schedule
-import time
 
-cards = ['boredom', 'disgust', 'loathing',
-         'admiration', 'trust', 'acceptance',
-         'interest', 'anticipation', 'vigilance',
-         'amazement', 'surprise', 'distraction']
-
-attentions = dict(zip(cards, [0]*len(cards)))
+from utils import cards, attentions, get_drive, get_response
 
 
 def decrease_attention():
@@ -32,7 +25,6 @@ def on_card(frame):
     card = cards[card_id]
     attentions[card] += 0.01
 
-
 @inlineCallbacks
 def main(session, details):
     global sess
@@ -44,10 +36,12 @@ def main(session, details):
     while True:
         yield sleep(1)
         decrease_attention()
+        drive = get_drive()
+        get_response(drive, sess)
         yield session.subscribe(on_card, "rie.vision.card.stream")
         yield session.call("rie.vision.card.stream")
         yield sleep(5)
-        #yield session.call("rie.vision.card.close")
+        
         print('hey hey')
     
 

@@ -1,11 +1,17 @@
-from autobahn.twisted.component import Component, run
 from twisted.internet.defer import inlineCallbacks
-from autobahn.twisted.util import sleep
-from dialogue import lines #, applause_on_keyword, is_smart_question, possible_answers
 
+
+cards = ['boredom', 'disgust', 'loathing',
+         'admiration', 'trust', 'acceptance',
+         'interest', 'anticipation', 'vigilance',
+         'distraction', 'surprise', 'amazement']
+
+pos = ['admiration', 'trust', 'acceptance', 'interest', 'anticipation', 'vigilance']
+
+attentions = dict(zip(cards, [0]*len(cards)))
 
 @inlineCallbacks
-def positive_response():
+def positive_response(sess):
     yield sess.call("rom.optional.behavior.play", name="BlocklyStand")
     yield sess.call("rom.actuator.motor.write", frames=[{"time": 200, "data": {"body.arms.right.lower.roll": -1.5,
                                                                                "body.arms.right.upper.pitch": -0.2,
@@ -33,7 +39,7 @@ def positive_response():
 
 
 @inlineCallbacks
-def neutral_response():
+def neutral_response(sess):
 
     # neutral position
     yield sess.call("rom.optional.behavior.play", name="BlocklyStand")
@@ -41,7 +47,7 @@ def neutral_response():
 
 
 @inlineCallbacks
-def negative_response():
+def negative_response(sess):
     yield sess.call("rom.optional.behavior.play", name="BlocklyStand")
     yield sess.call("rom.actuator.motor.write", frames=[{"time": 1000, "data": {"body.arms.right.lower.roll": -1.5,
                                                                                 "body.arms.right.upper.pitch": -1.2,
@@ -74,3 +80,33 @@ def negative_response():
                                                         ],
                     force=True, sync=True)
 
+def get_drive():
+    small_emotion = 0.2
+    mid_emotion = 0.4
+    big_emotion = 0.6
+
+    score_pos = 0
+    score_neg = 0
+
+    for card, att in attentions.items():
+        if cards.index(card) % 4 == 0:
+            coeff = small_emotion
+        elif cards.index(card) % 4 == 1:
+            coeff = mid_emotion
+        else:
+            coeff = big_emotion
+        if card in pos:
+            score_pos += att*coeff
+        else:
+            score_neg += att*coeff
+
+    drive = score_pos/max(score_neg, 1e-16)
+    return drive
+    
+def get_response(drive, sess):
+    if drive > 0.95 and drive < 1.05:
+        return neutral_response(sess)
+    elif drive >= 1.05:
+        return positive_response(sess)
+    else:
+        return negative_response(sess)
