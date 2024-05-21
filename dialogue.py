@@ -22,3 +22,5 @@ lines = ["Hello!",
          "No. Remember that lava is molten rock that reached the surface. Underground molten rock is called magma!",
          "Good job! That was a tricky one. Let's clap together for you! Say clap Chani!"
          ]
+
+
