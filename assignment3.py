@@ -15,7 +15,7 @@ from utils import cards, attentions, get_drive, get_response
 def decrease_attention():
     print("Losing my attention...")
     for card, _ in attentions.items():
-        attentions[card] *= 0.9
+        attentions[card] *= 0.85 
     print(attentions)
 
 
@@ -31,7 +31,7 @@ def main(session, details):
     sess = session
 
     yield sess.call("rom.optional.behavior.play", name="BlocklyStand")
-    yield sess.call("rie.dialogue.say", text="Hi, my name is Chani.")
+    yield sess.call("rie.dialogue.say", text="Hi, my name is Chani. Show me how you are feeling today.")
     
     while True:
         yield sleep(1)
@@ -54,7 +54,7 @@ wamp = Component(
         "url": "ws://wamp.robotsindeklas.nl",
         "serializers": ["msgpack"]
     }],
-    realm="rie.664c6a8cf26645d6dd2bebda",
+    realm="rie.6655a01bf26645d6dd2c1e70",
 )
 
 

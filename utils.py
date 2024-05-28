@@ -11,7 +11,7 @@ pos = ['admiration', 'trust', 'acceptance', 'interest', 'anticipation', 'vigilan
 attentions = dict(zip(cards, [0]*len(cards)))
 
 @inlineCallbacks
-def positive_response(sess):
+def positive_response(sess): 
     yield sess.call("rom.optional.behavior.play", name="BlocklyStand")
     yield sess.call("rom.actuator.motor.write", frames=[{"time": 200, "data": {"body.arms.right.lower.roll": -1.5,
                                                                                "body.arms.right.upper.pitch": -0.2,
@@ -27,15 +27,16 @@ def positive_response(sess):
                                                                                "body.arms.right.upper.pitch": -2.5,
                                                                                "body.arms.left.lower.roll": 6e-5,
                                                                                "body.arms.left.upper.pitch": -2.5,
-                                                                               "body.head.pitch": 0.1}},
+                                                                               "body.head.pitch": -0.17}},
                                                         {"time": 200, "data": {"body.arms.right.lower.roll": -0.6,
                                                                                "body.arms.right.upper.pitch": -2.5,
                                                                                "body.arms.left.lower.roll": -0.6,
                                                                                "body.arms.left.upper.pitch": -2.5,
-                                                                               "body.head.pitch": 0.1}}
+                                                                               "body.head.pitch": -0.17}}
                                                         ],
                     force=True, sync=True
                     )
+    yield sess.call("rie.dialogue.say", text="Yay!")
 
 
 @inlineCallbacks
@@ -54,17 +55,17 @@ def negative_response(sess):
                                                                                 "body.arms.left.lower.roll": -1.5,
                                                                                 "body.arms.left.upper.pitch": -1.2,
                                                                                 "body.head.pitch": 0.15,
-                                                                                "body.legs.right.upper.pitch": -0.4,
-                                                                                "body.legs.left.upper.pitch": -0.4,
+                                                                                "body.legs.right.upper.pitch": -0.45,
+                                                                                "body.legs.left.upper.pitch": -0.45,
                                                                                 "body.legs.right.lower.pitch": 0.4,
                                                                                 "body.legs.left.lower.pitch": 0.4}},
                                                         {"time": 1000, "data": {"body.arms.right.lower.roll": -1.5,
                                                                                 "body.arms.right.upper.pitch": -0.2,
                                                                                 "body.arms.left.lower.roll": -1.5,
                                                                                 "body.arms.left.upper.pitch": -0.2,
-                                                                                "body.head.pitch": 0.15,
-                                                                                "body.legs.right.upper.pitch": -0.4,
-                                                                                "body.legs.left.upper.pitch": -0.4,
+                                                                                "body.head.pitch": 0.17,
+                                                                                "body.legs.right.upper.pitch": -0.45,
+                                                                                "body.legs.left.upper.pitch": -0.45,
                                                                                 "body.legs.right.lower.pitch": 0.4,
                                                                                 "body.legs.left.lower.pitch": 0.4
                                                                                 }},
@@ -72,21 +73,22 @@ def negative_response(sess):
                                                                                 "body.arms.right.upper.pitch": -1.2,
                                                                                 "body.arms.left.lower.roll": -1.5,
                                                                                 "body.arms.left.upper.pitch": -1.2,
-                                                                                "body.head.pitch": 0.15,
-                                                                                "body.legs.right.upper.pitch": -0.4,
-                                                                                "body.legs.left.upper.pitch": -0.4,
+                                                                                "body.head.pitch": 0.17,
+                                                                                "body.legs.right.upper.pitch": -0.45,
+                                                                                "body.legs.left.upper.pitch": -0.45,
                                                                                 "body.legs.right.lower.pitch": 0.4,
                                                                                 "body.legs.left.lower.pitch": 0.4}}
                                                         ],
                     force=True, sync=True)
+    yield sess.call("rie.dialogue.say", text="Oh nooo...")
 
 def get_drive():
     small_emotion = 0.2
     mid_emotion = 0.4
     big_emotion = 0.6
 
-    score_pos = 0
-    score_neg = 0
+    score_pos = 1
+    score_neg = 1
 
     for card, att in attentions.items():
         if cards.index(card) % 4 == 0:
@@ -104,7 +106,8 @@ def get_drive():
     return drive
     
 def get_response(drive, sess):
-    if drive > 0.95 and drive < 1.05:
+    print('drive', drive)
+    if drive > 0.9 and drive < 1.1:
         return neutral_response(sess)
     elif drive >= 1.05:
         return positive_response(sess)
