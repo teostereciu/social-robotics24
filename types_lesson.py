@@ -2,6 +2,7 @@ import random
 
 from twisted.internet.defer import inlineCallbacks
 from autobahn.twisted.util import sleep
+from utils import cards
 
 lecture_lines = [
     "Now that we've seen different parts of a volcano. Let me show you the different types of volcanoes.",
@@ -35,12 +36,14 @@ fun_facts = [
 ]
 
 
+@inlineCallbacks
 def teach_volcano_types(sess):
     """
     Gives a short lesson about the major volcano types.
     """
+    print('hello')
     # start
-    line = lecture_lines[0]
+    '''line = lecture_lines[0]
     yield sess.call("rie.dialogue.say", text=line)
 
     # cinder cone
@@ -57,13 +60,15 @@ def teach_volcano_types(sess):
     
     # shield
     line = lecture_lines[7] + lecture_lines[8]
-    yield sess.call("rie.dialogue.say", text=line)
+    yield sess.call("rie.dialogue.say", text=line)'''
     
     question = lecture_lines[9]
-    answer = yield sess.call("rie.dialogue.ask",
+    print(question)
+    '''answer = yield sess.call("rie.dialogue.ask",
                              question=question,
                              answers={'yes':['yes', 'yeah', 'yup', 'yay'],
-                                      'no' :['no', 'nah', 'nope', 'nay']})
+                                      'no' :['no', 'nah', 'nope', 'nay']})'''
+    answer="no"
     if answer == "yes":
         line = lecture_lines[10]
         yield sess.call("rie.dialogue.say",
@@ -72,14 +77,14 @@ def teach_volcano_types(sess):
         line = lecture_lines[11]
         yield sess.call("rie.dialogue.say",
         text=line)
-        take_a_break_from_types(sess)
+        #take_a_break_from_types(sess)
     else:
         yield sess.call("rie.dialogue.say",
         text="Sorry, but I didn't hear you properly. Yes or no?")
     
     yield sess.call("rie.dialogue.stop")
     
-
+@inlineCallbacks
 def test_volcano_types(sess):
     """
     Gives a short quiz on major volcano types.
@@ -88,11 +93,13 @@ def test_volcano_types(sess):
     line = quiz_lines[0]
     yield sess.call("rie.dialogue.say", text=line)
     correct = False
-    cards = []
+    
     while not correct:
+        print('in while')
         frames = yield sess.call("rie.vision.card.read")  # wait until i see a card
+        print(frames)
         card_id = frames[0]['data']['body'][0][-1]
-        if cards[card_id] == 'cinder cone':
+        if cards[card_id] == 'cindercone':
             correct = True
         else:
             # wrong, try again
@@ -106,7 +113,7 @@ def test_volcano_types(sess):
     while not correct:
         frames = yield sess.call("rie.vision.card.read")
         card_id = frames[0]['data']['body'][0][-1]
-        if cards[card_id] == 'vent':
+        if cards[card_id] == 'sunsetcrater':
             correct = True
         else:
             # wrong, try again
@@ -120,7 +127,7 @@ def test_volcano_types(sess):
     while not correct:
         frames = yield sess.call("rie.vision.card.read")
         card_id = frames[0]['data']['body'][0][-1]
-        if cards[card_id] == 'magma':
+        if cards[card_id] == 'USA':
             correct = True
         else:
             # wrong, try again

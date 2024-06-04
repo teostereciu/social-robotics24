@@ -8,15 +8,9 @@ from autobahn.twisted.component import Component, run
 from twisted.internet.defer import inlineCallbacks
 from autobahn.twisted.util import sleep
 
+from parts_lesson import test_volcano_parts
+from types_lesson import teach_volcano_types, test_volcano_types
 from utils import cards, attentions, get_drive, get_response
-
-
-def decrease_attention():
-    """
-    Decay the intensities of the input emotions.
-    """
-    for card, _ in attentions.items():
-        attentions[card] *= 0.85 
 
 
 def on_card(frame):
@@ -32,22 +26,27 @@ def on_card(frame):
 def main(session, details):
     global sess
     sess = session
-
+    yield session.call("rie.dialogue.config.language", lang="en")
     ########### introduction ###########
     yield sess.call("rom.optional.behavior.play", name="BlocklyStand")
-    yield sess.call("rie.dialogue.say", text="Hi, my name is Chani. Show me how you are feeling today.")
+    #yield sess.call("rie.dialogue.say", text="Hi, my name is Chani. Show me how you are feeling today.")
    
     ########### lesson about volcano parts ###########
     # teach
     # question
+    #test_volcano_parts(sess)
     # break
 
     ########### lesson about types of volcanoes ###########
     # teach
+    print('main')
+    teach_volcano_types(sess)
+    #test_volcano_types(sess)
     # question
     # break
     
     ########### end of the lesson ###########
+    yield sess.leave()
 
 
 # create wamp connection
@@ -56,7 +55,7 @@ wamp = Component(
         "url": "ws://wamp.robotsindeklas.nl",
         "serializers": ["msgpack"]
     }],
-    realm="rie.6655a01bf26645d6dd2c1e70",
+    realm="rie.665ec56e29fca0a53366cd30",
 )
 
 
