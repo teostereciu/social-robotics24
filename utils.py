@@ -11,6 +11,12 @@ cards = ['volcano', 'magma', 'vent',
 # initialize attentions
 attentions = dict(zip(cards, [0]*len(cards)))
 
+def decrease_attention():
+    """
+    Decay the intensities of the input emotions.
+    """
+    for card, _ in attentions.items():
+        attentions[card] *= 0.85
 
 @inlineCallbacks
 def correct_response(sess):

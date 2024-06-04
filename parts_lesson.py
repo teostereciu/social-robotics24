@@ -1,4 +1,4 @@
-from utils import cards
+from utils import cards, decrease_attention, get_drive, get_response
 
 
 lines = [
@@ -108,10 +108,16 @@ def test_volcano_parts(sess):
         card_id = frames[0]['data']['body'][0][-1]
         if cards[card_id] == 'ash':
             correct = True
+            decrease_attention()
+            drive = get_drive(correct)
+            get_response(drive)
         else:
             # wrong, try again
             line = lines[10]  # optionally replace '<>' with what the student said, so cards[card_id]
             yield sess.call("rie.dialogue.say", text=line)
+            decrease_attention()
+            drive = get_drive(correct)
+            get_response(drive)
 
     # correct, move on to vent question
     line = lines[11]
@@ -120,12 +126,15 @@ def test_volcano_parts(sess):
     while not correct:
         frames = yield sess.call("rie.vision.card.read")
         card_id = frames[0]['data']['body'][0][-1]
+        decrease_attention()
         if cards[card_id] == 'vent':
             correct = True
         else:
             # wrong, try again
             line = lines[12]  # optionally replace '<>' with what the student said, so cards[card_id]
             yield sess.call("rie.dialogue.say", text=line)
+        drive = get_drive(correct)
+        get_response(drive)
 
     # correct, move on to magma question
     line = lines[13]
