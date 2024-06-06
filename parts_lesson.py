@@ -19,7 +19,10 @@ lines = [
     "No. Try again. Remember the vent in in the middle of the volcano.",
     "That's right! What runs through the vent? Can you show me?",
     "No. Remember that lava is molten rock that reached the surface. Underground molten rock is called magma!",
-    "Good job! That was a tricky one."
+    "Good job! That was a tricky one.",
+    
+    "Okay, time for a little break! Let's dance together!",
+    "Ah, what a nice break. Now let's test your knowledge of volcano parts.",
 ]
 
 eruption_gesture_pressure = [
@@ -95,6 +98,9 @@ def teach_volcano_parts(sess):
     line = lines[8]
     yield sess.call("rie.dialogue.say", text=line)
     yield sess.call("rom.optional.behavior.play", name="BlocklyStand")
+    line = lines[16]
+    yield sess.call("rie.dialogue.say", text=line)
+    yield take_a_break_from_parts(sess)
 
 @inlineCallbacks
 def test_volcano_parts(sess):
@@ -102,7 +108,8 @@ def test_volcano_parts(sess):
     Gives a short quiz on major volcano parts.
     """
 
-    print('ok')
+    line = lines[17]
+    yield sess.call("rie.dialogue.say", text=line)
     line = lines[9]
     yield sess.call("rie.dialogue.say", text=line)
     correct = False
@@ -166,6 +173,7 @@ def test_volcano_parts(sess):
     line = lines[15]
     yield sess.call("rie.dialogue.say", text=line)
 
+
 @inlineCallbacks
 def take_a_break_from_parts(sess):
     """
@@ -173,4 +181,6 @@ def take_a_break_from_parts(sess):
     At their request, Alpha Mini can do a dance or offer a fun fact about volcano parts.
     """
     # dance
+    #yield sleep(5)
     yield sess.call("rom.optional.behavior.play", name="BlocklyRobotDance")
+    #yield sleep(5)

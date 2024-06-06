@@ -2,21 +2,22 @@ import random
 
 from twisted.internet.defer import inlineCallbacks
 from autobahn.twisted.util import sleep
-from utils import cards
+from utils import cards, decrease_attention, get_drive, get_response, increase_attention, reset_attentions
 
 lecture_lines = [
     "Now that we've seen different parts of a volcano. Let me show you the different types of volcanoes.",
     "Cinder cone volcanoes are the most common type. They are also the smallest.",
     "For example, Sunset Crater is a cinder cone volcano. It has a single crater fed by only one vent.",
     "Another type of volcano is a Lava Dome. It is also on the smaller side with limited volume.",
-    "For example, Showa Shinjan is a lava dome volcano. It has steep sides and rough surface."
+    "For example, Showa Shinjan is a lava dome volcano. It has steep sides and rough surface.",
     "There are also composite volcanoes which are bigger. Their eruptions are huge!",
     "For example, Mayon is a compositive volcano. It has very steep sides and the lava does not flow far.",
     "Finally, we also talk about Shield Volcanoes. They are much wider than they are tall.",
     "For example, Mauna Loa is a shield volcano. The intermediate period between eruptions are usually millions of years. When it erupts, liquid lava flows out.",
     "Are you ready to see these volcanoes on a map?",
     "Cool! Here's the map of the world. Sunset Crater is in the USA. Showa Shinjan is in Japan. Mayon is in the Phillippines. Mauna Loa is in Hawaii.",
-    "Okay. Let's have a break first, and then see the map together.",
+    "Okay. Let's have a break first, and then see the map together."
+    "Awesome. I have a few questions for you now."
 ]
 
 quiz_lines = [
@@ -43,12 +44,14 @@ def teach_volcano_types(sess):
     """
     print('hello')
     # start
-    '''line = lecture_lines[0]
+    line = lecture_lines[0]
     yield sess.call("rie.dialogue.say", text=line)
 
     # cinder cone
     line = lecture_lines[1] + lecture_lines[2]
     yield sess.call("rie.dialogue.say", text=line)
+
+    yield sess.call("rom.optional.behavior.play", name="BlocklyInviteRight")
 
     # lava dome
     line = lecture_lines[3] + lecture_lines[4]
@@ -57,17 +60,22 @@ def teach_volcano_types(sess):
     # composite
     line = lecture_lines[5] + lecture_lines[6]
     yield sess.call("rie.dialogue.say", text=line)
+
+    yield sess.call("rom.optional.behavior.play", name="BlocklyInviteLeft")
     
     # shield
     line = lecture_lines[7] + lecture_lines[8]
-    yield sess.call("rie.dialogue.say", text=line)'''
+    yield sess.call("rie.dialogue.say", text=line)
     
     question = lecture_lines[9]
-    print(question)
+
     '''answer = yield sess.call("rie.dialogue.ask",
                              question=question,
                              answers={'yes':['yes', 'yeah', 'yup', 'yay'],
-                                      'no' :['no', 'nah', 'nope', 'nay']})'''
+                                      'no' :['no', 'nah', 'nope', 'nay']})
+    '''
+    
+    yield sess.call("rom.optional.behavior.play", name="BlocklyStand")
     answer="no"
     if answer == "yes":
         line = lecture_lines[10]
@@ -77,7 +85,7 @@ def teach_volcano_types(sess):
         line = lecture_lines[11]
         yield sess.call("rie.dialogue.say",
         text=line)
-        #take_a_break_from_types(sess)
+        take_a_break_from_types(sess)
     else:
         yield sess.call("rie.dialogue.say",
         text="Sorry, but I didn't hear you properly. Yes or no?")
@@ -89,6 +97,9 @@ def test_volcano_types(sess):
     """
     Gives a short quiz on major volcano types.
     """
+    line = quiz_lines[12]
+    yield sess.call("rie.dialogue.say", text=line)
+
     # easy question
     line = quiz_lines[0]
     yield sess.call("rie.dialogue.say", text=line)
@@ -99,12 +110,19 @@ def test_volcano_types(sess):
         frames = yield sess.call("rie.vision.card.read")  # wait until i see a card
         print(frames)
         card_id = frames[0]['data']['body'][0][-1]
+        increase_attention(card_id)
         if cards[card_id] == 'cindercone':
             correct = True
         else:
             # wrong, try again
             line = quiz_lines[1] 
             yield sess.call("rie.dialogue.say", text=line)
+        drive = get_drive(correct)
+        print(drive)
+        get_response(drive, sess)
+        decrease_attention()
+    
+    reset_attentions()
     
     # correct, move on to medium question
     line = quiz_lines[2]
@@ -127,7 +145,7 @@ def test_volcano_types(sess):
     while not correct:
         frames = yield sess.call("rie.vision.card.read")
         card_id = frames[0]['data']['body'][0][-1]
-        if cards[card_id] == 'USA':
+        if cards[card_id] == 'arizona':
             correct = True
         else:
             # wrong, try again

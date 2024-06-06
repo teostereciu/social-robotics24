@@ -5,7 +5,8 @@ cards = ['volcano', 'magma', 'vent',
          'crater', 'lava', 'ash',
          'cindercone', 'lavadome', 'compositevolcano',
          'shieldvolcano', 'sunsetcrater', 'showashinjan',
-         'mayon', 'maunaloa']
+         'mayon', 'maunaloa', 'arizona', 
+         'japan', 'philippines', 'hawaii']
 
 
 # initialize attentions
