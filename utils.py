@@ -1,16 +1,29 @@
 from twisted.internet.defer import inlineCallbacks
 
 # define the input card labels
-cards = ['volcano', 'magma', 'vent', #2
-         'crater', 'lava', 'ash', #5
-         'cindercone', 'lavadome', 'compositevolcano', #8
-         'shieldvolcano', 'sunsetcrater', 'showashinjan', #11
-         'mayon', 'maunaloa', 'arizona', #14
-         'japan', 'philippines', 'hawaii'] #17
+
+cards = ['volcano', 'magma', 'vent',
+         'crater', 'lava', 'ash',
+         'cindercone', 'lavadome', 'compositevolcano',
+         'shieldvolcano', 'sunsetcrater', 'showashinjan',
+         'mayon', 'maunaloa', 'arizona', 
+         'japan', 'philippines', 'hawaii']
+
 
 
 # initialize attentio
 attentions = dict(zip(cards, [0]*len(cards)))
+
+def reset_attentions():
+    attentions = dict(zip(cards, [0]*len(cards)))
+
+def increase_attention(card_id):
+    """
+    Increase intensity of input emotion when shown the card.
+    """
+    card = cards[card_id]
+    attentions[card] += 0.01
+
 
 def decrease_attention():
     """
@@ -18,6 +31,9 @@ def decrease_attention():
     """
     for card, _ in attentions.items():
         attentions[card] *= 0.85
+
+    print(attentions)
+
 
 @inlineCallbacks
 def correct_response(sess):
@@ -56,6 +72,7 @@ def neutral_response(sess):
     """
     Implements a neutral expression.
     """ 
+    print('neutral resp')
     yield sess.call("rom.optional.behavior.play", name="BlocklyStand")
 
 
@@ -114,7 +131,7 @@ def get_drive(correct):
     score_incorrect = 1
 
     for card, att in attentions.items():
-        coeff = big_emotion
+        coeff = 0.6
         if correct:
             score_correct += att*coeff
         else:
@@ -129,9 +146,10 @@ def get_response(drive, sess):
     Decide on and trigger an emotional expression based on the drive.
     """
 
-    if drive > 0.9 and drive < 1.1:
+    if drive > 0.99 and drive < 1.01:
+        print('get response')
         return neutral_response(sess)
-    elif drive >= 1.05:
+    elif drive >= 1.01:
         return correct_response(sess)
     else:
         return encourage_response(sess)

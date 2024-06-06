@@ -1,5 +1,6 @@
-from utils import cards, decrease_attention, get_drive, get_response
-
+from utils import cards, decrease_attention, get_drive, get_response, increase_attention, reset_attentions
+from twisted.internet.defer import inlineCallbacks
+from autobahn.twisted.util import sleep
 
 lines = [
     "First, let me show you the parts of a volcano.",
@@ -18,7 +19,10 @@ lines = [
     "No. Try again. Remember the vent in in the middle of the volcano.",
     "That's right! What runs through the vent? Can you show me?",
     "No. Remember that lava is molten rock that reached the surface. Underground molten rock is called magma!",
-    "Good job! That was a tricky one."
+    "Good job! That was a tricky one.",
+    
+    "Okay, time for a little break! Let's dance together!",
+    "Ah, what a nice break. Now let's test your knowledge of volcano parts.",
 ]
 
 eruption_gesture_pressure = [
@@ -57,7 +61,7 @@ eruption_gesture_explode = [
                            "body.head.pitch": 0.1}}
 ]
 
-
+@inlineCallbacks
 def teach_volcano_parts(sess):
     """
     Gives a short lesson about the major volcano parts.
@@ -94,31 +98,39 @@ def teach_volcano_parts(sess):
     line = lines[8]
     yield sess.call("rie.dialogue.say", text=line)
     yield sess.call("rom.optional.behavior.play", name="BlocklyStand")
+    line = lines[16]
+    yield sess.call("rie.dialogue.say", text=line)
+    yield take_a_break_from_parts(sess)
 
-
+@inlineCallbacks
 def test_volcano_parts(sess):
     """
     Gives a short quiz on major volcano parts.
     """
+
+    line = lines[17]
+    yield sess.call("rie.dialogue.say", text=line)
     line = lines[9]
     yield sess.call("rie.dialogue.say", text=line)
     correct = False
     while not correct:
         frames = yield sess.call("rie.vision.card.read")  # wait until i see a card
         card_id = frames[0]['data']['body'][0][-1]
+        print(card_id)
+        increase_attention(card_id)
         if cards[card_id] == 'ash':
             correct = True
-            decrease_attention()
-            drive = get_drive(correct)
-            get_response(drive)
+
         else:
             # wrong, try again
             line = lines[10]  # optionally replace '<>' with what the student said, so cards[card_id]
             yield sess.call("rie.dialogue.say", text=line)
-            decrease_attention()
-            drive = get_drive(correct)
-            get_response(drive)
-
+        print('ok')
+        drive = get_drive(correct)
+        print(drive)
+        get_response(drive, sess)
+        decrease_attention()
+    reset_attentions()
     # correct, move on to vent question
     line = lines[11]
     yield sess.call("rie.dialogue.say", text=line)
@@ -126,7 +138,7 @@ def test_volcano_parts(sess):
     while not correct:
         frames = yield sess.call("rie.vision.card.read")
         card_id = frames[0]['data']['body'][0][-1]
-        decrease_attention()
+        increase_attention(card_id)
         if cards[card_id] == 'vent':
             correct = True
         else:
@@ -134,8 +146,11 @@ def test_volcano_parts(sess):
             line = lines[12]  # optionally replace '<>' with what the student said, so cards[card_id]
             yield sess.call("rie.dialogue.say", text=line)
         drive = get_drive(correct)
-        get_response(drive)
+        get_response(drive, sess)
+        decrease_attention()
 
+    yield sleep(2)
+    reset_attentions()
     # correct, move on to magma question
     line = lines[13]
     yield sess.call("rie.dialogue.say", text=line)
@@ -143,22 +158,29 @@ def test_volcano_parts(sess):
     while not correct:
         frames = yield sess.call("rie.vision.card.read")
         card_id = frames[0]['data']['body'][0][-1]
+        increase_attention(card_id)
         if cards[card_id] == 'magma':
             correct = True
         else:
             # wrong, try again
             line = lines[14]  # optionally replace '<>' with what the student said, so cards[card_id]
             yield sess.call("rie.dialogue.say", text=line)
+        drive = get_drive(correct)
+        get_response(drive, sess)
+        decrease_attention()
 
     # correct
     line = lines[15]
     yield sess.call("rie.dialogue.say", text=line)
 
 
+@inlineCallbacks
 def take_a_break_from_parts(sess):
     """
     Lets the student take a break. 
     At their request, Alpha Mini can do a dance or offer a fun fact about volcano parts.
     """
     # dance
+    #yield sleep(5)
     yield sess.call("rom.optional.behavior.play", name="BlocklyRobotDance")
+    #yield sleep(5)
