@@ -1,14 +1,15 @@
 from twisted.internet.defer import inlineCallbacks
 
 # define the input card labels
-cards = ['volcano', 'magma', 'vent',
-         'crater', 'lava', 'ash',
-         'cindercone', 'lavadome', 'compositevolcano',
-         'shieldvolcano', 'sunsetcrater', 'showashinjan',
-         'mayon', 'maunaloa']
+cards = ['volcano', 'magma', 'vent', #2
+         'crater', 'lava', 'ash', #5
+         'cindercone', 'lavadome', 'compositevolcano', #8
+         'shieldvolcano', 'sunsetcrater', 'showashinjan', #11
+         'mayon', 'maunaloa', 'arizona', #14
+         'japan', 'philippines', 'hawaii'] #17
 
 
-# initialize attentions
+# initialize attentio
 attentions = dict(zip(cards, [0]*len(cards)))
 
 def decrease_attention():
