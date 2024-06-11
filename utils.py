@@ -64,7 +64,7 @@ def correct_response(sess):
                                                         ],
                     force=True, sync=True
                     )
-    yield sess.call("rie.dialogue.say", text="You are doing great! Keep up the good work! ")
+    yield sess.call("rie.dialogue.say", text="Yay!")
 
 
 @inlineCallbacks
@@ -140,7 +140,6 @@ def get_drive(correct):
     drive = score_correct/max(score_incorrect, 1e-16)
     return drive
     
-
 def get_response(drive, sess):
     """
     Decide on and trigger an emotional expression based on the drive.

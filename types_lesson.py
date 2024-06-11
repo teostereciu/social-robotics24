@@ -16,7 +16,7 @@ lecture_lines = [
     "For example, Mauna Loa is a shield volcano. The intermediate period between eruptions are usually millions of years. When it erupts, liquid lava flows out.",
     "Are you ready to see these volcanoes on a map?",
     "Cool! Here's the map of the world. Sunset Crater is in the USA. Showa Shinjan is in Japan. Mayon is in the Phillippines. Mauna Loa is in Hawaii.",
-    "Okay. Let's have a break first, and then see the map together."
+    "Okay. Let's have a break first, and then see the map together.",
     "Awesome. I have a few questions for you now."
 ]
 
@@ -31,9 +31,9 @@ quiz_lines = [
 ]
 
 fun_facts = [
-    'fun',
-    'fun',
-    'fun'
+    'The Pacific Ring of Fire contains 75 percent of volcanoes.',
+    'Mauna Loa is taller than Mount Everest. Most of it is below the ocean surface.',
+    'Temperatures can reach up to 1200 plus degrees Celsius at volcanoes.'
 ]
 
 
@@ -42,7 +42,7 @@ def teach_volcano_types(sess):
     """
     Gives a short lesson about the major volcano types.
     """
-    print('hello')
+    yield sess.call("rom.optional.behavior.play", name="BlocklyStand")
     # start
     line = lecture_lines[0]
     yield sess.call("rie.dialogue.say", text=line)
@@ -61,7 +61,7 @@ def teach_volcano_types(sess):
     line = lecture_lines[5] + lecture_lines[6]
     yield sess.call("rie.dialogue.say", text=line)
 
-    yield sess.call("rom.optional.behavior.play", name="BlocklyInviteLeft")
+    yield sess.call("rom.optional.behavior.play", name="BlocklyInviteRight")
     
     # shield
     line = lecture_lines[7] + lecture_lines[8]
@@ -74,7 +74,7 @@ def teach_volcano_types(sess):
                              answers={'yes':['yes', 'yeah', 'yup', 'yay'],
                                       'no' :['no', 'nah', 'nope', 'nay']})
     '''
-    
+    yield sess.call("rie.dialogue.say", text=question)
     yield sess.call("rom.optional.behavior.play", name="BlocklyStand")
     answer="no"
     if answer == "yes":
@@ -97,7 +97,7 @@ def test_volcano_types(sess):
     """
     Gives a short quiz on major volcano types.
     """
-    line = quiz_lines[12]
+    line = lecture_lines[12]
     yield sess.call("rie.dialogue.say", text=line)
 
     # easy question
@@ -119,7 +119,7 @@ def test_volcano_types(sess):
             yield sess.call("rie.dialogue.say", text=line)
         drive = get_drive(correct)
         print(drive)
-        get_response(drive, sess)
+        yield get_response(drive, sess)
         decrease_attention()
     
     reset_attentions()
@@ -131,12 +131,20 @@ def test_volcano_types(sess):
     while not correct:
         frames = yield sess.call("rie.vision.card.read")
         card_id = frames[0]['data']['body'][0][-1]
+        increase_attention(card_id)
         if cards[card_id] == 'sunsetcrater':
             correct = True
         else:
             # wrong, try again
             line = quiz_lines[3] 
             yield sess.call("rie.dialogue.say", text=line)
+
+        drive = get_drive(correct)
+        print(drive)
+        yield get_response(drive, sess)
+        decrease_attention()
+    
+    reset_attentions()
    
     # correct, move on to difficult question
     line = quiz_lines[4]
@@ -145,12 +153,21 @@ def test_volcano_types(sess):
     while not correct:
         frames = yield sess.call("rie.vision.card.read")
         card_id = frames[0]['data']['body'][0][-1]
+        increase_attention(card_id)
         if cards[card_id] == 'arizona':
             correct = True
         else:
             # wrong, try again
             line = quiz_lines[5] 
             yield sess.call("rie.dialogue.say", text=line)
+
+        drive = get_drive(correct)
+        print(drive)
+        response = get_response(drive, sess)
+        yield response
+        decrease_attention()
+    
+    reset_attentions()
 
     # correct, congratulate and clap in main
     line = quiz_lines[6]

@@ -22,7 +22,6 @@ def on_keyword(frame):
             frame["data"]["body"]["certainty"] > 0.45):
         
         if frame["data"]["body"]["text"] in ['clap']:
-            yield sess.call("rie.dialogue.say", text="Yes! Let's clap together.") 
             sess.call("rom.optional.behavior.play", name="BlocklyApplause")
     
 
@@ -45,7 +44,7 @@ def main(session, details):
     yield sess.call("rom.optional.behavior.play", name="BlocklyStand")
     yield sess.call("rie.vision.face.find")
     yield sess.call("rom.optional.behavior.play", name="BlocklyWaveRightArm")
-    line = "Hi my name is Chani. Today I'll teach you about volcanoes."
+    line = "Hello! My name is Chani. Today I'll teach you about volcanoes."
     yield sess.call("rie.dialogue.say", text=line)
     
     '''question = "Are you ready?"
@@ -54,6 +53,8 @@ def main(session, details):
                              answers={'yes':['yes', 'yeah', 'yup', 'yay'],
                                       'no' :['no', 'nah', 'nope', 'nay']})
     '''
+    line = "Are you ready?" # for demo purposes
+    yield sess.call("rie.dialogue.say", text=line)
     answer="no"
     if answer == "yes":
         line = "Awesome! Today we wll dive into the fiery world of volcanoes."
@@ -66,7 +67,7 @@ def main(session, details):
         line = "No worries! Let me start with a fun fact"
         yield sess.call("rie.dialogue.say",
         text=line)
-        line = "Do you know that there are more than 15000 volcanoes around the world. Here's a map. Each red dot on the map represents a volcano site."
+        line = "Do you know that there are more than 1500 volcanoes around the world. Here's a map. Each red dot on the map represents a volcano site."
         yield sess.call("rie.dialogue.say",
         text=line)
     else:
@@ -98,6 +99,7 @@ def main(session, details):
     yield session.call("rie.dialogue.keyword.clear")
     yield session.call("rie.dialogue.keyword.close")
     
+    yield sess.call("rie.dialogue.say", text="Okay, goodbye for now!") 
     yield sess.leave()
 
 

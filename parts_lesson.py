@@ -166,7 +166,7 @@ def test_volcano_parts(sess):
             line = lines[14]  # optionally replace '<>' with what the student said, so cards[card_id]
             yield sess.call("rie.dialogue.say", text=line)
         drive = get_drive(correct)
-        get_response(drive, sess)
+        yield get_response(drive, sess)
         decrease_attention()
 
     # correct
