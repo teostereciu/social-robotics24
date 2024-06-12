@@ -109,7 +109,7 @@ wamp = Component(
         "url": "ws://wamp.robotsindeklas.nl",
         "serializers": ["msgpack"]
     }],
-    realm="rie.666187af29fca0a53366e071",
+    realm="rie.66681a16961f249628fc1824",
 )
 
 
