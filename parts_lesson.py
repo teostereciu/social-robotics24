@@ -125,7 +125,7 @@ def test_volcano_parts(sess):
 
         else:
             # wrong, try again
-            line = lines[10]  # optionally replace '<>' with what the student said, so cards[card_id]
+            line = lines[10]  
             yield sess.call("rie.dialogue.say", text=line)
 
         drive = get_drive(correct)
@@ -133,7 +133,7 @@ def test_volcano_parts(sess):
         decrease_attention()
 
     reset_attentions()
-    
+
     # correct, move on to vent question
     line = lines[11]
     yield sess.call("rie.dialogue.say", text=line)
@@ -146,7 +146,7 @@ def test_volcano_parts(sess):
             correct = True
         else:
             # wrong, try again
-            line = lines[12]  # optionally replace '<>' with what the student said, so cards[card_id]
+            line = lines[12]  
             yield sess.call("rie.dialogue.say", text=line)
         drive = get_drive(correct)
         get_response(drive, sess)
@@ -166,7 +166,7 @@ def test_volcano_parts(sess):
             correct = True
         else:
             # wrong, try again
-            line = lines[14]  # optionally replace '<>' with what the student said, so cards[card_id]
+            line = lines[14]  
             yield sess.call("rie.dialogue.say", text=line)
         drive = get_drive(correct)
         yield get_response(drive, sess)
@@ -181,9 +181,7 @@ def test_volcano_parts(sess):
 def take_a_break_from_parts(sess):
     """
     Lets the student take a break. 
-    At their request, Alpha Mini can do a dance or offer a fun fact about volcano parts.
+    Alpha Mini does a dance.
     """
     # dance
-    #yield sleep(5)
     yield sess.call("rom.optional.behavior.play", name="BlocklyRobotDance")
-    #yield sleep(5)
