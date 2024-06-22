@@ -1,3 +1,5 @@
+# by teo stereciu
+
 import random
 
 from twisted.internet.defer import inlineCallbacks
@@ -24,7 +26,7 @@ quiz_lines = [
     "Do you remember which type of volcano is the most common?",
     "No. That's not it. Remember the most common type of volcano is the smallest and has one vent and crater.",
     "Yes! That's correct. Can you give me an example of a cinder cone volcano from the lecture?",
-    "No. Try again, you've got this!",
+    "No. Remember the picture? Try again, you've got this!",
     "That's right! Do you know where is this volcano?",
     "No. it's in North America! Can you remember the country?",
     "Good job! That was a tricky one. Let's clap together for you!"
@@ -69,14 +71,14 @@ def teach_volcano_types(sess):
     
     question = lecture_lines[9]
 
-    '''answer = yield sess.call("rie.dialogue.ask",
+    answer = yield sess.call("rie.dialogue.ask",
                              question=question,
                              answers={'yes':['yes', 'yeah', 'yup', 'yay'],
                                       'no' :['no', 'nah', 'nope', 'nay']})
-    '''
-    yield sess.call("rie.dialogue.say", text=question)
+    
+    # yield sess.call("rie.dialogue.say", text=question) for demo
     yield sess.call("rom.optional.behavior.play", name="BlocklyStand")
-    answer="no"
+    # answer="no" for demo
     if answer == "yes":
         line = lecture_lines[10]
         yield sess.call("rie.dialogue.say",
@@ -106,9 +108,7 @@ def test_volcano_types(sess):
     correct = False
     
     while not correct:
-        print('in while')
         frames = yield sess.call("rie.vision.card.read")  # wait until i see a card
-        print(frames)
         card_id = frames[0]['data']['body'][0][-1]
         increase_attention(card_id)
         if cards[card_id] == 'cindercone':
@@ -117,8 +117,8 @@ def test_volcano_types(sess):
             # wrong, try again
             line = quiz_lines[1] 
             yield sess.call("rie.dialogue.say", text=line)
+        
         drive = get_drive(correct)
-        print(drive)
         yield get_response(drive, sess)
         decrease_attention()
     
@@ -140,7 +140,6 @@ def test_volcano_types(sess):
             yield sess.call("rie.dialogue.say", text=line)
 
         drive = get_drive(correct)
-        print(drive)
         yield get_response(drive, sess)
         decrease_attention()
     
@@ -162,7 +161,6 @@ def test_volcano_types(sess):
             yield sess.call("rie.dialogue.say", text=line)
 
         drive = get_drive(correct)
-        print(drive)
         response = get_response(drive, sess)
         yield response
         decrease_attention()

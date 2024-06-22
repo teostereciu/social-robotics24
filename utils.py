@@ -1,7 +1,8 @@
+# worked together on this
+
 from twisted.internet.defer import inlineCallbacks
 
 # define the input card labels
-
 cards = ['volcano', 'magma', 'vent',
          'crater', 'lava', 'ash',
          'cindercone', 'lavadome', 'compositevolcano',
@@ -15,6 +16,9 @@ cards = ['volcano', 'magma', 'vent',
 attentions = dict(zip(cards, [0]*len(cards)))
 
 def reset_attentions():
+    """
+    Reset attentions to 0.
+    """
     attentions = dict(zip(cards, [0]*len(cards)))
 
 def increase_attention(card_id):
@@ -31,8 +35,6 @@ def decrease_attention():
     """
     for card, _ in attentions.items():
         attentions[card] *= 0.85
-
-    print(attentions)
 
 
 @inlineCallbacks
@@ -72,7 +74,6 @@ def neutral_response(sess):
     """
     Implements a neutral expression.
     """ 
-    print('neutral resp')
     yield sess.call("rom.optional.behavior.play", name="BlocklyStand")
 
 
@@ -137,7 +138,7 @@ def get_drive(correct):
         else:
             score_incorrect += att*coeff
 
-    drive = score_correct/max(score_incorrect, 1e-16)
+    drive = score_correct/score_incorrect
     return drive
     
 def get_response(drive, sess):
@@ -146,7 +147,6 @@ def get_response(drive, sess):
     """
 
     if drive > 0.99 and drive < 1.01:
-        print('get response')
         return neutral_response(sess)
     elif drive >= 1.01:
         return correct_response(sess)

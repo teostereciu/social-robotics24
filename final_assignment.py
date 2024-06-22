@@ -10,14 +10,15 @@ from autobahn.twisted.util import sleep
 
 from parts_lesson import teach_volcano_parts, test_volcano_parts
 from types_lesson import teach_volcano_types, test_volcano_types
-from utils import cards, attentions, get_drive, get_response
+from utils import cards, attentions
 
 
-# indicates the response to keywords
 @inlineCallbacks
 def on_keyword(frame):
+    """
+    Define response to keywords.
+    """
     c = frame["data"]["body"]["certainty"]
-    print("after keyword certainty", c, ": ", frame)
     if ("certainty" in frame["data"]["body"] and
             frame["data"]["body"]["certainty"] > 0.45):
         
@@ -47,15 +48,15 @@ def main(session, details):
     line = "Hello! My name is Chani. Today I'll teach you about volcanoes."
     yield sess.call("rie.dialogue.say", text=line)
     
-    '''question = "Are you ready?"
+    question = "Are you ready?"
     answer = yield sess.call("rie.dialogue.ask",
                              question=question,
                              answers={'yes':['yes', 'yeah', 'yup', 'yay'],
                                       'no' :['no', 'nah', 'nope', 'nay']})
-    '''
-    line = "Are you ready?" # for demo purposes
-    yield sess.call("rie.dialogue.say", text=line)
-    answer="no"
+    
+    #line = "Are you ready?" for demo purposes
+    #yield sess.call("rie.dialogue.say", text=line)
+    #answer="no" 
     if answer == "yes":
         line = "Awesome! Today we wll dive into the fiery world of volcanoes."
         yield sess.call("rie.dialogue.say",

@@ -1,3 +1,5 @@
+# by yingsi gao
+
 from utils import cards, decrease_attention, get_drive, get_response, increase_attention, reset_attentions
 from twisted.internet.defer import inlineCallbacks
 from autobahn.twisted.util import sleep
@@ -116,7 +118,7 @@ def test_volcano_parts(sess):
     while not correct:
         frames = yield sess.call("rie.vision.card.read")  # wait until i see a card
         card_id = frames[0]['data']['body'][0][-1]
-        print(card_id)
+
         increase_attention(card_id)
         if cards[card_id] == 'ash':
             correct = True
@@ -125,12 +127,13 @@ def test_volcano_parts(sess):
             # wrong, try again
             line = lines[10]  # optionally replace '<>' with what the student said, so cards[card_id]
             yield sess.call("rie.dialogue.say", text=line)
-        print('ok')
+
         drive = get_drive(correct)
-        print(drive)
         get_response(drive, sess)
         decrease_attention()
+
     reset_attentions()
+    
     # correct, move on to vent question
     line = lines[11]
     yield sess.call("rie.dialogue.say", text=line)
